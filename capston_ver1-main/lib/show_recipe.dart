@@ -6,8 +6,11 @@ import 'package:recipe_page_new/ui/widgets/recipe_widget.dart';
 
 // ignore: must_be_immutable
 class ShowRecipeWithIngredients extends StatefulWidget {
-   
-  ShowRecipeWithIngredients({super.key, required this.recipes, required this.resultData,});
+  ShowRecipeWithIngredients({
+    super.key,
+    required this.recipes,
+    required this.resultData,
+  });
   final List<RecipeModel> recipes;
   List<RecipeModel> filteredRecipes = [];
   final List<String> resultData;
@@ -19,7 +22,7 @@ class ShowRecipeWithIngredients extends StatefulWidget {
 class _SearchRecipeScreenState extends State<ShowRecipeWithIngredients> {
   late List<RecipeModel> _filteredRecipes;
   List<RecipeModel> _filteredRecipe = [];
-  
+
   void filterRecipe(String value) {
     setState(() {
       _filteredRecipes = widget.recipes
@@ -28,24 +31,19 @@ class _SearchRecipeScreenState extends State<ShowRecipeWithIngredients> {
           .toList();
     });
   }
- _filterRecipes(List<String> resultData) {
-    setState(() {
-      for (var ingredient in resultData){
-        
 
-       _filteredRecipes = widget.recipes
-          .where((recipe) =>
-              recipe.ingredients.toLowerCase().contains(ingredient))
-          .toList();
-          print(ingredient);
-        
-       
-         _filteredRecipe.addAll(_filteredRecipes);
-        
+  _filterRecipes(List<String> resultData) {
+    setState(() {
+      for (var ingredient in resultData) {
+        _filteredRecipes = widget.recipes.where((recipe) {
+          return recipe.ingredients.toLowerCase().contains(ingredient);
+        }).toList();
+        print(ingredient);
+
+        _filteredRecipe.addAll(_filteredRecipes);
       }
+      _filteredRecipe.toSet().toList();
     });
-      
-    
   }
 
   @override
@@ -55,7 +53,7 @@ class _SearchRecipeScreenState extends State<ShowRecipeWithIngredients> {
   }
 
   @override
-  Widget build(BuildContext context) { 
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: TextField(

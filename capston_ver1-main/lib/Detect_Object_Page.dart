@@ -11,8 +11,6 @@ import 'package:recipe_page_new/LoaderState.dart';
 import 'package:recipe_page_new/providers/recipe_provider.dart';
 import 'package:recipe_page_new/show_recipe.dart';
 
-
-
 class detect_object_page extends StatefulWidget {
   const detect_object_page({Key? key}) : super(key: key);
 
@@ -72,34 +70,30 @@ class _HomeScreenState extends State<detect_object_page> {
 
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
 
-    try{
+    try {
       objDetect = await _objectModel.getImagePrediction(
-      await File(image!.path).readAsBytes(),
-      minimumScore: 0.1,
-      IOUThershold: 0.3,
-    );
-   
-    
-    classNames = [];
-    for (var detection in objDetect) {
-      classNames.add(detection?.className ?? '');
-    }
+        await File(image!.path).readAsBytes(),
+        minimumScore: 0.1,
+        IOUThershold: 0.3,
+      );
 
-    scheduleTimeout(5 * 1000);
-    setState(() {
-      _image = File(image.path);
-    });
-     }catch(e){
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('No Image Detected')
-      ));
+      classNames = [];
+      for (var detection in objDetect) {
+        classNames.add(detection?.className ?? '');
+      }
+
+      scheduleTimeout(5 * 1000);
+      setState(() {
+        _image = File(image.path);
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('No Image Detected')));
     }
   }
-  
 
   resultData() {
     var result = classNames;
-    
   }
 
   Future<void> runObjectDetectionAgain() async {
@@ -131,55 +125,58 @@ class _HomeScreenState extends State<detect_object_page> {
   Widget build(BuildContext context) {
     return Consumer<RecipeClass>(
         builder: (BuildContext context, myProvider, Widget? child) => Scaffold(
-      appBar: AppBar(
-        title: const Text("SMART PALATE"),
-        centerTitle: true,
-        backgroundColor: Colors.pink,
-      ),
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            !firststate
-                ? !message
-                    ? LoaderState()
-                    : Text("Select the Camera to Begin Detections")
-                : Expanded(
-                    child: Container(
-                      child:
-                          _objectModel.renderBoxesOnImage(_image!, objDetect),
+              appBar: AppBar(
+                title: const Text("SMART PALATE"),
+                centerTitle: true,
+                backgroundColor: Colors.pink,
+              ),
+              backgroundColor: Colors.white,
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    !firststate
+                        ? !message
+                            ? LoaderState()
+                            : Text("Select the Camera to Begin Detections")
+                        : Expanded(
+                            child: Container(
+                              child: _objectModel.renderBoxesOnImage(
+                                  _image!, objDetect),
+                            ),
+                          ),
+                    SizedBox(
+                      height: 100,
                     ),
-                  ),
-            SizedBox(
-              height: 100,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                runObjectDetectionAgain();
-              },
-              child: Text('Retake Photo'),
-            ),
-            SizedBox(
-              height: 80,
-            ),
-           
-             SizedBox(
-              height: 100,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ShowRecipeWithIngredients(resultData: classNames, recipes: myProvider.allRecipes,)),
-                );
-              },
-              child: const Text('View Recipe'),
-            ),
-          ],
-        ),
-      ),
-    ));
+                    ElevatedButton(
+                      onPressed: () {
+                        runObjectDetectionAgain();
+                      },
+                      child: Text('Retake Photo'),
+                    ),
+                    SizedBox(
+                      height: 80,
+                    ),
+                    SizedBox(
+                      height: 100,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ShowRecipeWithIngredients(
+                                    resultData: classNames,
+                                    recipes: myProvider.allRecipes,
+                                  )),
+                        );
+                      },
+                      child: const Text('View Recipe'),
+                    ),
+                  ],
+                ),
+              ),
+            ));
   }
 }

@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:recipe_page_new/Detect_Object_Page.dart';
-import 'package:recipe_page_new/HomeScreen.dart';
 import 'package:recipe_page_new/data_repository/item_dbHelper.dart';
 import 'package:recipe_page_new/providers/alleres_provider.dart';
 import 'package:recipe_page_new/providers/item_provider.dart';
@@ -61,7 +60,7 @@ class InitApp extends StatelessWidget {
         '/new_recipe_screen': (context) => const NewRecipeScreen(),
         '/main_recipe_screen': (context) => const MainRecipeScreen(),
         '/shopping_list_screen': (context) => const ShoppingListScreen(),
-        '/homescreen':(context) => const HomeScreen()
+        
       },
     );
   }
